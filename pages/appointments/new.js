@@ -10,7 +10,7 @@ export default function NewAppointment() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("http://localhost:3001/doctors")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`)
       .then((res) => res.json())
       .then(setDoctors)
       .catch(console.error);
@@ -18,7 +18,7 @@ export default function NewAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch("http://localhost:3001/appointments", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

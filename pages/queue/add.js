@@ -14,7 +14,7 @@ export default function AddToQueue() {
 
   const fetchDoctors = async () => {
     try {
-      const res = await fetch("http://localhost:3001/doctors");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`);
       const data = await res.json();
       setDoctors(data);
     } catch (err) {
@@ -25,7 +25,7 @@ export default function AddToQueue() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch("http://localhost:3001/queue", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queue`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

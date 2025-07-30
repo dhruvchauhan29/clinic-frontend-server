@@ -19,7 +19,7 @@ export default function AddDoctor() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch("http://localhost:3001/doctors", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

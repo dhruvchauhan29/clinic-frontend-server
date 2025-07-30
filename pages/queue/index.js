@@ -37,7 +37,7 @@ export default function QueueManagement() {
 
   const fetchQueue = async () => {
     try {
-      const res = await fetch("http://localhost:3001/queue");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queue`);
       const data = await res.json();
       setPatients(data);
     } catch (err) {
@@ -47,7 +47,7 @@ export default function QueueManagement() {
 
   const fetchDoctors = async () => {
     try {
-      const res = await fetch("http://localhost:3001/doctors");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`);
       const data = await res.json();
       setDoctors(data);
     } catch (err) {
@@ -57,7 +57,7 @@ export default function QueueManagement() {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      await fetch(`http://localhost:3001/queue/${id}/status`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queue/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -71,7 +71,9 @@ export default function QueueManagement() {
   const deletePatient = async (id) => {
     if (!confirm("Delete this patient from queue?")) return;
     try {
-      await fetch(`http://localhost:3001/queue/${id}`, { method: "DELETE" });
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/queue/${id}`, {
+        method: "DELETE",
+      });
       fetchQueue();
     } catch (err) {
       console.error("Failed to delete patient", err);
@@ -120,8 +122,8 @@ export default function QueueManagement() {
     };
 
     const url = form.id
-      ? `http://localhost:3001/queue/${form.id}`
-      : `http://localhost:3001/queue`;
+      ? `${process.env.NEXT_PUBLIC_API_URL}/queue/${form.id}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/queue`;
     const method = form.id ? "PUT" : "POST";
 
     try {

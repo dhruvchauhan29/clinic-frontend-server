@@ -18,7 +18,7 @@ export default function EditDoctor() {
   }, [id]);
 
   const fetchDoctor = async () => {
-    const res = await fetch(`http://localhost:3001/doctors/${id}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors/${id}`);
     const data = await res.json();
     setForm(data);
   };
@@ -29,7 +29,7 @@ export default function EditDoctor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`http://localhost:3001/doctors/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

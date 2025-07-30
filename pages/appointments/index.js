@@ -15,19 +15,19 @@ export default function AppointmentManagement() {
   }, []);
 
   const fetchAppointments = async () => {
-    const res = await fetch("http://localhost:3001/appointments");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments`);
     const data = await res.json();
     setAppointments(data);
   };
 
   const fetchDoctors = async () => {
-    const res = await fetch("http://localhost:3001/doctors");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`);
     const data = await res.json();
     setDoctors(data);
   };
 
   const updateStatus = async (id, newStatus) => {
-    await fetch(`http://localhost:3001/appointments/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
@@ -36,7 +36,7 @@ export default function AppointmentManagement() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:3001/appointments/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/${id}`, {
       method: "DELETE",
     });
     fetchAppointments();
@@ -54,30 +54,41 @@ export default function AppointmentManagement() {
 
   const handleUpdate = async () => {
     if (!selectedAppointment || !selectedAppointment.doctor?.id) {
-      alert("Please select a doctor before updating.");
+      alert("Please select a doctor before submitting.");
       return;
     }
 
+    const payload = {
+      patientName: selectedAppointment.patientName,
+      date: selectedAppointment.date,
+      time: selectedAppointment.time,
+      status: selectedAppointment.status,
+      doctorId: selectedAppointment.doctor.id,
+    };
+
     try {
-      await fetch(
-        `http://localhost:3001/appointments/${selectedAppointment.id}`,
-        {
-          method: "PUT",
+      if (selectedAppointment.id) {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/appointments/${selectedAppointment.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+      } else {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments`, {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            patientName: selectedAppointment.patientName,
-            date: selectedAppointment.date,
-            time: selectedAppointment.time,
-            status: selectedAppointment.status,
-            doctorId: selectedAppointment.doctor.id,
-          }),
-        }
-      );
+          body: JSON.stringify(payload),
+        });
+      }
 
       fetchAppointments();
       setShowModal(false);
+      setSelectedAppointment(null);
     } catch (err) {
-      console.error("Failed to update appointment", err);
+      console.error("Failed to submit appointment", err);
     }
   };
 
@@ -149,7 +160,7 @@ export default function AppointmentManagement() {
       ))}
 
       {/* MODAL */}
-      {showModal && selectedAppointment && (
+      {showModal && (
         <div
           className="modal d-block"
           tabIndex="-1"
@@ -266,7 +277,16 @@ export default function AppointmentManagement() {
 
       <button
         className="btn btn-primary w-100 mt-4"
-        onClick={() => setShowModal(true)}
+        onClick={() => {
+          setSelectedAppointment({
+            patientName: "",
+            date: "",
+            time: "",
+            status: "booked",
+            doctor: null,
+          });
+          setShowModal(true);
+        }}
       >
         Schedule New Appointment
       </button>

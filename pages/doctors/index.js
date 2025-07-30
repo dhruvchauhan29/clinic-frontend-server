@@ -13,7 +13,7 @@ export default function DoctorsList() {
 
   const fetchDoctors = async () => {
     try {
-      const res = await fetch("http://localhost:3001/doctors");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`);
       const data = await res.json();
       setDoctors(data);
     } catch (err) {
@@ -24,7 +24,7 @@ export default function DoctorsList() {
   const deleteDoctor = async (id) => {
     if (!confirm("Are you sure you want to delete this doctor?")) return;
     try {
-      await fetch(`http://localhost:3001/doctors/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors/${id}`, {
         method: "DELETE",
       });
       fetchDoctors();
@@ -45,11 +45,14 @@ export default function DoctorsList() {
 
   const handleUpdate = async () => {
     try {
-      await fetch(`http://localhost:3001/doctors/${selectedDoctor.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedDoctor),
-      });
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/doctors/${selectedDoctor.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(selectedDoctor),
+        }
+      );
       fetchDoctors();
       closeModal();
     } catch (err) {

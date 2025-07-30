@@ -10,11 +10,11 @@ export default function EditAppointment() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:3001/appointments/${id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/${id}`)
         .then((res) => res.json())
         .then(setAppointment);
 
-      fetch("http://localhost:3001/doctors")
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`)
         .then((res) => res.json())
         .then(setDoctors);
     }
@@ -22,7 +22,7 @@ export default function EditAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`http://localhost:3001/appointments/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appointments/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
